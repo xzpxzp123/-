@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.Timer;
 
 public class windows extends JFrame {
+    public static boolean successornot=true;
     public Food food;
     public Snack snack;
     public java.util.Timer timer;
@@ -25,18 +26,16 @@ public class windows extends JFrame {
         //初始化蛇
         initsnack();
         //初始化画布
-         initwindows();
+        initwindows();
         initTimer();
         //定时器1,每隔100ms执行一次定时任务
         //定时任务指的是将蛇按指定方向移动(删除尾坐标，添加头坐标),并用横线和竖线和新的蛇重新绘制画布
-        initTimer2();
-        //定时器2,每隔1000ms执行一次定时任务
-        //定时任务是随机生成食物,并将横线竖线蛇和食物构成的集合重新绘制画布
         setKey();
         //设置键盘输入改变蛇移动的方向
     }
     public void  initFood(){
         food=new Food();
+        food.generateFood();
     }
     public void setKey(){
 
@@ -69,33 +68,69 @@ public class windows extends JFrame {
     private void initwindows() {
         jPanel = new JPanel() {
             public void paint(Graphics g) {
-                //先清空原本画布
                 g.clearRect(0,0,490,350);
-                //画横线和竖线形成方格
-                for (int i = 0; i < 21; i++) {
-                    g.drawLine(0, i * 15, 450, i * 15);
+                //先清空原本画布
+                super.paintComponent(g);
+                setBackground(Color.BLACK);
+                int cell = 15;  
+                int rows = 20;    
+                int cols = 30;    
+                // 画内部横线
+                g.setColor(Color.WHITE);
+                for (int r = 1; r < rows; r++) {
+                    g.drawLine(0, r * cell, cols * cell, r * cell);
                 }
-                for (int i = 0; i < 31; i++) {
-                    g.drawLine(i * 15, 0, i * 15, 300);
+
+                // 画内部竖线
+                for (int c = 1; c < cols; c++) {
+                    g.drawLine(c * cell, 0, c * cell, rows * cell);
                 }
-                //将蛇和食物的集合画到画布上
+
+                // 画外圈 * 边框（黄色）
+                g.setColor(Color.YELLOW);
+                g.setFont(new Font("Monospaced", Font.BOLD, 16));
+
+                // 上边框
+                for (int c = 0; c < cols; c++) {
+                    g.drawString("*", c * cell, cell - 2);
+                }
+                // 下边框
+                for (int c = 0; c < cols; c++) {
+                    g.drawString("*", c * cell, rows * cell);
+                }
+                // 左边框
+                for (int r = 0; r < rows; r++) {
+                    g.drawString("*", 0, r * cell + cell - 2);
+                }
+                // 右边框
+                for (int r = 0; r < rows; r++) {
+                    g.drawString("*", (cols - 1) * cell, r * cell + cell - 2);
+                }
+                if(!successornot){
+                    g.setColor(Color.RED);
+                    g.setFont(new Font("黑体", Font.BOLD, 30));
+                    g.drawString("游戏失败"+snack.score, 250, 200);
+                }
                 LinkedList<Point> points = snack.getLinkedList();
                 LinkedList<Point> points2=food.getArrayList();
                 for (Point point : points) {
-                    g.setColor(Color.BLACK);
+                    g.setColor(Color.RED);
                     g.fillRect(point.x, point.y, 15, 15);
                 }
                 for(Point point:points2){
-                    g.setColor(Color.BLACK);
+                    g.setColor(Color.RED);
                     g.fillRect(point.x, point.y, 15, 15);
                 }
             }
         };
         //将画布加入方框
         add(jPanel);
-       }
+        if(successornot==false){
+            System.exit(0);
+        }
+    }
 
- public void initTimer(){
+    public void initTimer(){
         timer=new Timer();
         TimerTask timerTask=new TimerTask() {
             @Override
@@ -106,26 +141,15 @@ public class windows extends JFrame {
                 //其中蛇的移动会判断蛇是否触碰到食物集合中的任一食物
                 //若有则修改蛇头,并且删除食物集合中的食物
                 //以外还会判断临界条件,蛇是否移动到了边界位置;
-               jPanel.repaint();
-            }
-        };
-       timer.scheduleAtFixedRate(timerTask,0,100);
- }
-    public void initTimer2(){
-        timer2=new Timer();
-        TimerTask timerTask=new TimerTask() {
-            @Override
-            public void run() {
-                //每隔1000ms移动一次蛇,若期间没有键盘输入,则按照原指定的方向移动
-               food.generateFood();
-               //重绘画布,新画布中包含方格,蛇和新添加了食物的食物集合
                 jPanel.repaint();
             }
         };
-        timer2.scheduleAtFixedRate(timerTask,0,1000);
+        timer.scheduleAtFixedRate(timerTask,0,100);
     }
- public static void main(String[] urgs) throws FileNotFoundException {
+    public static void main(String[] urgs) throws FileNotFoundException {
         new windows().setVisible(true);
- }
- }
-
+    }
+    public static  void setSuccessornot(){
+        successornot=false;
+    }
+}
