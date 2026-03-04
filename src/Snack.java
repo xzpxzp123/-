@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Snack {
+    public int score=0;
+    public int cnt=0;
     public static LinkedList<Point> arrayList;
     public static int direction= 0;
     public Snack(){
@@ -27,21 +29,23 @@ public class Snack {
             arrayList.addFirst(new Point(arrayList.getFirst().x+15,arrayList.getFirst().y));
         }
         if(arrayList.getFirst().x<0||arrayList.getFirst().x>=450||arrayList.getFirst().y<0||arrayList.getFirst().y>=300){
-            System.exit(0);
+            windows.setSuccessornot();
         }
         Point pointt=arrayList.getFirst();
         for(int i=1;i<arrayList.size();i++){
             if(pointt.x==arrayList.get(i).getX()&&pointt.y==arrayList.get(i).getY()){
-                System.exit(0);
+                windows.setSuccessornot();
             }
         }
         if(pointt.getX()<0||pointt.getY()<0&&pointt.getX()>=450&&pointt.getY()>=300){
-            System.exit(0);
+            windows.setSuccessornot();
         }
         for(int i=0;i<food.getArrayList().size();i++){
             if(pointt.x==food.getArrayList().get(i).getX()&&pointt.y==food.getArrayList().get(i).getY()){
                 arrayList.addFirst(food.getArrayList().get(i));
                 food.getArrayList().remove(i);
+                food.generateFood();
+                score=score+10;
             }
         }
     }
