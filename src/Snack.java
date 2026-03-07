@@ -7,12 +7,12 @@ public class Snack {
     public int score=0;
     public int cnt=0;
     public static LinkedList<Point> arrayList;
-    public static int direction= 0;
+    public static int direction= 3;
     public Snack(){
-        arrayList=new LinkedList<>();
-        arrayList.add(new Point(150,150));
-        arrayList.add(new Point(150,165));
-        arrayList.add(new Point(150,180));
+         arrayList=new LinkedList<>();
+        arrayList.add(new Point(255,150));
+        arrayList.add(new Point(240,150));
+        arrayList.add(new Point(225,150));
     }
     public  void move(Food food){
       arrayList.removeLast();
@@ -37,7 +37,7 @@ public class Snack {
                 windows.setSuccessornot();
             }
         }
-        if(pointt.getX()<0||pointt.getY()<0&&pointt.getX()>=450&&pointt.getY()>=300){
+        if(arrayList.getFirst().x<0||arrayList.getFirst().x>=435||arrayList.getFirst().y<0||arrayList.getFirst().y>=285){
             windows.setSuccessornot();
         }
         for(int i=0;i<food.getArrayList().size();i++){
